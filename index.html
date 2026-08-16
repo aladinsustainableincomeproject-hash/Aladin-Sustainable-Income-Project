@@ -1,0 +1,1277 @@
+<html lang="id" class="light-style" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ALADIN</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="Logo Aladin.png">
+
+    <!-- Google Fonts & Boxicons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Public Sans', sans-serif;
+            background-color: #f5f5f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .preloader img {
+            width: 90px;
+            height: auto;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            100% { transform: scale(1.15); opacity: 1; }
+        }
+
+        /* Layout Structure */
+        .wrapper {
+            display: flex;
+            width: 100%;
+            align-items: stretch;
+        }
+
+        /* Sidebar Styling */
+        #sidebar {
+            min-width: 260px;
+            max-width: 260px;
+            background: #fff;
+            color: #697a8d;
+            transition: all 0.3s ease;
+            box-shadow: 0 0.125rem 0.375rem 0 rgba(161, 172, 184, 0.12);
+            z-index: 1000;
+        }
+
+        #sidebar .sidebar-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #sidebar .sidebar-header h4 {
+            margin: 0;
+            font-weight: 700;
+            color: #566a7f;
+        }
+
+        #sidebar ul.components {
+            padding: 10px 0;
+        }
+
+        #sidebar ul li a {
+            padding: 10px 25px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            color: #697a8d;
+            text-decoration: none;
+            gap: 12px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        #sidebar ul li a:hover, 
+        #sidebar ul li.active > a {
+            color: #696cff;
+            background: rgba(105, 108, 255, 0.08);
+            border-radius: 0 50px 50px 0;
+        }
+
+        #sidebar ul li.active > a {
+            font-weight: 600;
+        }
+
+        .submenu {
+            list-style: none;
+            padding-left: 15px !important;
+        }
+
+        .submenu li a {
+            padding: 8px 25px !important;
+            font-size: 0.88rem !important;
+        }
+
+        /* Page Content */
+        #content {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .main-navbar {
+            background: #fff;
+            padding: 0.8rem 1.5rem;
+            margin: 15px 20px 0 20px;
+            border-radius: 10px;
+            box-shadow: 0 0.125rem 0.375rem 0 rgba(161, 172, 184, 0.12);
+        }
+
+        /* Cards Custom Styling */
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            border-radius: 16px !important;
+            border: none !important;
+            color: white !important;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3) !important;
+        }
+
+        .stat-card {
+            border-radius: 16px;
+            border: none;
+            transition: all 0.3s ease;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+
+        .bg-card-dana { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .bg-card-members { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .bg-card-setoran { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .bg-card-penarikan { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* ==========================================
+           PROFESSIONAL & KEREN HIERARCHY TREE CSS
+           ========================================== */
+        .tree-container {
+            overflow: auto;
+            padding: 40px 20px;
+            text-align: center;
+            background: radial-gradient(circle, #fcfcfd 0%, #f3f4f8 100%);
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            min-height: 550px;
+        }
+
+        .tree-wrapper-inner {
+            display: inline-block;
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform-origin: top center;
+        }
+
+        .tree {
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .tree ul {
+            padding-top: 30px; 
+            position: relative;
+            transition: all 0.4s;
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .tree li {
+            float: left; 
+            text-align: center;
+            list-style-type: none;
+            position: relative;
+            padding: 30px 12px 0 12px;
+            transition: all 0.4s;
+        }
+
+        /* Connecting Lines */
+        .tree li::before, .tree li::after {
+            content: '';
+            position: absolute; 
+            top: 0; 
+            right: 50%;
+            border-top: 2.5px solid #a0aec0;
+            width: 50%; 
+            height: 30px;
+        }
+
+        .tree li::after {
+            right: auto; 
+            left: 50%;
+            border-left: 2.5px solid #a0aec0;
+        }
+
+        .tree li:only-child::after, .tree li:only-child::before {
+            display: none;
+        }
+
+        .tree li:only-child { 
+            padding-top: 0; 
+        }
+
+        .tree li:first-child::before, .tree li:last-child::after {
+            border: 0;
+        }
+
+        .tree li:last-child::before {
+            border-right: 2.5px solid #a0aec0;
+            border-radius: 0 8px 0 0;
+        }
+
+        .tree li:first-child::after {
+            border-radius: 8px 0 0 0;
+        }
+
+        .tree ul ul::before {
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: 50%;
+            border-left: 2.5px solid #a0aec0;
+            width: 0; 
+            height: 30px;
+        }
+
+        /* Modern Corporate Node Card */
+        .tree-node-card {
+            background: #ffffff;
+            border: none;
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: inline-block;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            text-align: left;
+            min-width: 250px;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-top: 5px solid var(--node-border, #696cff);
+        }
+
+        .tree-node-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 35px -5px rgba(105, 108, 255, 0.2), 0 10px 15px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Responsive Sidebar Toggle */
+        @media (max-width: 991.98px) {
+            #sidebar {
+                margin-left: -260px;
+                position: fixed;
+                height: 100vh;
+            }
+            #sidebar.active {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <img src="Logo Aladin.png" alt="ALADIN Logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/90?text=ALADIN';">
+    </div>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <img src="Logo Aladin.png" width="38" height="38" alt="ALADIN Logo" style="object-fit: contain;" onerror="this.onerror=null; this.src='https://via.placeholder.com/38?text=A';">
+                <h4>ALADIN</h4>
+            </div>
+
+            <ul class="components list-unstyled">
+                <li class="nav-item-link" id="menu-dashboard">
+                    <a onclick="aktifkanDashboard()"><i class="bx bx-home-circle fs-5"></i> Dashboard</a>
+                </li>
+                <li class="nav-item-link" id="menu-profil">
+                    <a onclick="aktifkanProfil()"><i class="bx bx-user fs-5"></i> Profil</a>
+                </li>
+                <li>
+                    <a href="#pengajuanSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle d-flex justify-content-between align-items-center">
+                        <span><i class="bx bx-layout fs-5 me-2"></i> Pengajuan</span>
+                    </a>
+                    <ul class="collapse list-unstyled submenu" id="pengajuanSubmenu">
+                        <li id="menu-setoran"><a onclick="aktifkanSetoran()"><i class="bx bx-right-arrow-alt"></i> Setoran</a></li>
+                        <li id="menu-penarikan"><a onclick="aktifkanPenarikan()"><i class="bx bx-right-arrow-alt"></i> Penarikan</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item-link" id="menu-transfer">
+                    <a onclick="aktifkanTransfer()"><i class="bx bx-send fs-5"></i> Transfer Saldo</a>
+                </li>
+                <li class="nav-item-link" id="menu-jaringan">
+                    <a onclick="aktifkanJaringan()"><i class="bx bx-sitemap fs-5"></i> Jaringan</a>
+                </li>
+                <li class="nav-item-link" id="menu-referal">
+                    <a onclick="aktifkanReferalLink()"><i class="bx bx-link fs-5"></i> Referal Link</a>
+                </li>
+                <li class="nav-item-link" id="menu-profit-sharing">
+                    <a onclick="aktifkanProfitSharing()"><i class="bx bx-dollar-circle fs-5"></i> Profit Sharing</a>
+                </li>
+                <!-- Menu Database Leader -->
+                <li class="active" id="menu-database-leader-parent">
+                    <a href="#leaderSubmenu" data-bs-toggle="collapse" aria-expanded="true" class="dropdown-toggle d-flex justify-content-between align-items-center">
+                        <span><i class="bx bx-trophy fs-5 me-2"></i> Database Leader</span>
+                    </a>
+                    <ul class="collapse show list-unstyled submenu" id="leaderSubmenu">
+                        <li><a onclick="filterLeader('Semua')"><i class="bx bx-right-arrow-alt"></i> Semua Leader</a></li>
+                        <li><a onclick="filterLeader('Agent')"><i class="bx bx-right-arrow-alt"></i> Agent</a></li>
+                        <li><a onclick="filterLeader('Ambassador')"><i class="bx bx-right-arrow-alt"></i> Ambassador</a></li>
+                        <li><a onclick="filterLeader('Manager')"><i class="bx bx-right-arrow-alt"></i> Manager</a></li>
+                        <li><a onclick="filterLeader('Senior Manager')"><i class="bx bx-right-arrow-alt"></i> Senior Manager</a></li>
+                        <li><a onclick="filterLeader('Director')"><i class="bx bx-right-arrow-alt"></i> Director</a></li>
+                    </ul>
+                </li>
+                <li class="mt-4">
+                    <a href="#" class="text-danger" onclick="alert('Anda telah keluar sesi (Log Out).')"><i class="bx bx-power-off fs-5"></i> Log Out</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div id="content">
+            <!-- Navbar Header -->
+            <div class="main-navbar d-flex justify-content-between align-items-center">
+                <button type="button" id="sidebarCollapse" class="btn btn-light d-lg-none">
+                    <i class="bx bx-menu fs-4"></i>
+                </button>
+                <div class="ms-auto d-flex align-items-center gap-3">
+                    <span class="fw-semibold text-secondary">ABD SATAR</span>
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle hide-arrow" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="https://www.sustainableincome.id/image/user-profil.png" alt="Profile" width="40" height="40" class="rounded-circle" style="object-fit: cover;" onerror="this.onerror=null; this.src='https://via.placeholder.com/40';">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end text-small shadow">
+                            <li><a class="dropdown-item" onclick="aktifkanProfil()"><i class="bx bx-user me-2"></i> Profil Saya</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i class="bx bx-power-off me-2"></i> Log Out</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Body -->
+            <div class="container-fluid p-4" id="mainDynamicContent">
+                
+                <!-- Section Dashboard View -->
+                <div id="dashboardSection" style="display: none;">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card welcome-card p-3">
+                                <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                                    <div>
+                                        <h4 class="fw-bold mb-2">Selamat Datang, ABD SATAR!</h4>
+                                        <div class="d-inline-flex align-items-center gap-2 bg-white px-3 py-1 rounded-3 text-dark border mb-2">
+                                            <small class="text-muted text-uppercase fw-semibold" style="font-size: 0.75rem;">User ID Anda:</small>
+                                            <span class="fw-bold" id="userIdText">ALADIN000001</span>
+                                            <button class="btn btn-sm p-0 text-primary ms-1" onclick="copyUserId()" title="Salin ID">
+                                                <i class="bx bx-copy fs-6" id="copyIcon"></i>
+                                            </button>
+                                        </div>
+                                        <p class="mb-0 text-white-50 small">Simpan USER ID Anda untuk login ke aplikasi.</p>
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-white bg-opacity-25 text-white border border-white border-opacity-25 p-2 rounded-3">
+                                            <i class="bx bx-calendar-event me-1"></i> Bergabung: <strong>21 July 2026</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card stat-card bg-card-dana p-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="small text-white-50 fw-medium">Total Dana</div>
+                                        <h4 class="fw-bold mb-0 mt-1">Rp 15.450.000</h4>
+                                    </div>
+                                    <div class="stat-icon"><i class="bx bx-wallet"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card stat-card bg-card-members p-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="small text-white-50 fw-medium">Total Anggota</div>
+                                        <h4 class="fw-bold mb-0 mt-1">124</h4>
+                                    </div>
+                                    <div class="stat-icon"><i class="bx bx-group"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card stat-card bg-card-setoran p-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="small text-white-50 fw-medium">Total Setoran</div>
+                                        <h4 class="fw-bold mb-0 mt-1">Rp 20.000.000</h4>
+                                    </div>
+                                    <div class="stat-icon"><i class="bx bx-down-arrow-circle"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card stat-card bg-card-penarikan p-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="small text-white-50 fw-medium">Total Penarikan</div>
+                                        <h4 class="fw-bold mb-0 mt-1">Rp 4.550.000</h4>
+                                    </div>
+                                    <div class="stat-icon"><i class="bx bx-up-arrow-circle"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Card Area / Dynamic Views (Default to Database Leader Table) -->
+                <div class="row" id="dynamicCardArea">
+                    <div class="col-12">
+                        <!-- Card Table Database Leader -->
+                        <div class="card border-0 shadow-sm rounded-4" id="tableCard">
+                            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                                <h5 class="fw-bold mb-0 text-dark" id="tableTitle">Database Leader - Semua Leader</h5>
+                                <span class="badge bg-primary rounded-pill px-3 py-2" id="totalBadge">Total: 21 Anggota</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light" id="tableHeader">
+                                        <tr>
+                                            <th scope="col" class="ps-4">No</th>
+                                            <th scope="col">Nama Anggota</th>
+                                            <th scope="col">User ID</th>
+                                            <th scope="col">Jabatan Leader</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="leaderTableBody">
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">1</td>
+                                            <td class="fw-semibold text-dark">Abd Satar</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000001</span></td>
+                                            <td><span class="badge bg-danger">Director</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">2</td>
+                                            <td class="fw-semibold text-dark">Seri Witdawati</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000002</span></td>
+                                            <td><span class="badge bg-primary">Senior Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">3</td>
+                                            <td class="fw-semibold text-dark">Wardah</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000003</span></td>
+                                            <td><span class="badge bg-primary">Senior Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">4</td>
+                                            <td class="fw-semibold text-dark">Muhammad Zaini Habibie</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000004</span></td>
+                                            <td><span class="badge bg-primary">Senior Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">5</td>
+                                            <td class="fw-semibold text-dark">Ratu Multazam</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000005</span></td>
+                                            <td><span class="badge bg-primary">Senior Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">6</td>
+                                            <td class="fw-semibold text-dark">Birri Alfa Thariq</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000006</span></td>
+                                            <td><span class="badge bg-primary">Senior Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">7</td>
+                                            <td class="fw-semibold text-dark">Siti Aiysah</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000007</span></td>
+                                            <td><span class="badge bg-primary">Senior Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">8</td>
+                                            <td class="fw-semibold text-dark">Siti Jumiyah</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000008</span></td>
+                                            <td><span class="badge bg-primary">Senior Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">9</td>
+                                            <td class="fw-semibold text-dark">Muhammad Arif Palacca</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000009</span></td>
+                                            <td><span class="badge bg-primary">Senior Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">10</td>
+                                            <td class="fw-semibold text-dark">Evy Nurkhalishah</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000010</span></td>
+                                            <td><span class="badge bg-primary">Senior Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">11</td>
+                                            <td class="fw-semibold text-dark">Bonita Fithri</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000011</span></td>
+                                            <td><span class="badge bg-primary">Senior Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">12</td>
+                                            <td class="fw-semibold text-dark">Imam Syafi’i</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000012</span></td>
+                                            <td><span class="badge bg-primary">Senior Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">13</td>
+                                            <td class="fw-semibold text-dark">Seri Saputri</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000013</span></td>
+                                            <td><span class="badge bg-primary">Senior Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">14</td>
+                                            <td class="fw-semibold text-dark">Resti Saputri</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000014</span></td>
+                                            <td><span class="badge bg-primary">Senior Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">15</td>
+                                            <td class="fw-semibold text-dark">M. Doni Firdaus</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000015</span></td>
+                                            <td><span class="badge bg-info text-dark">Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">16</td>
+                                            <td class="fw-semibold text-dark">Risman Saputra</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000016</span></td>
+                                            <td><span class="badge bg-info text-dark">Manager</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">17</td>
+                                            <td class="fw-semibold text-dark">Redo Putra Septi</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000017</span></td>
+                                            <td><span class="badge bg-warning text-dark">Ambassador</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">18</td>
+                                            <td class="fw-semibold text-dark">Marianto</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000018</span></td>
+                                            <td><span class="badge bg-warning text-dark">Ambassador</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">19</td>
+                                            <td class="fw-semibold text-dark">Agus Susanti</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000019</span></td>
+                                            <td><span class="badge bg-warning text-dark">Ambassador</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">20</td>
+                                            <td class="fw-semibold text-dark">Marsa</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000020</span></td>
+                                            <td><span class="badge bg-success">Agent</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">21</td>
+                                            <td class="fw-semibold text-dark">M. Fahri Firdaus</td>
+                                            <td><span class="badge bg-light text-dark border">ALADIN000021</span></td>
+                                            <td><span class="badge bg-success">Agent</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Preloader fade out
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            preloader.style.opacity = '0';
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 500);
+        });
+
+        // Sidebar Toggle for Mobile
+        document.getElementById('sidebarCollapse').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Copy User ID
+        function copyUserId() {
+            const userId = document.getElementById('userIdText').innerText;
+            navigator.clipboard.writeText(userId).then(() => {
+                const icon = document.getElementById('copyIcon');
+                icon.className = 'bx bx-check fs-6 text-success';
+                setTimeout(() => {
+                    icon.className = 'bx bx-copy fs-6';
+                }, 2000);
+            });
+        }
+
+        // Leader Data Mockup
+        const leadersData = [
+            { no: 1, nama: "Abd Satar", id: "ALADIN000001", jabatan: "Director", badge: "bg-danger", borderColor: "#dc3545" },
+            { no: 2, nama: "Seri Witdawati", id: "ALADIN000002", jabatan: "Senior Manager", badge: "bg-primary", borderColor: "#0d6efd" },
+            { no: 3, nama: "Wardah", id: "ALADIN000003", jabatan: "Senior Manager", badge: "bg-primary", borderColor: "#0d6efd" },
+            { no: 4, nama: "Muhammad Zaini Habibie", id: "ALADIN000004", jabatan: "Senior Manager", badge: "bg-primary", borderColor: "#0d6efd" },
+            { no: 5, nama: "Ratu Multazam", id: "ALADIN000005", jabatan: "Senior Manager", badge: "bg-primary", borderColor: "#0d6efd" },
+            { no: 6, nama: "Birri Alfa Thariq", id: "ALADIN000006", jabatan: "Senior Manager", badge: "bg-primary", borderColor: "#0d6efd" },
+            { no: 7, nama: "Siti Aiysah", id: "ALADIN000007", jabatan: "Senior Manager", badge: "bg-primary", borderColor: "#0d6efd" },
+            { no: 8, nama: "Siti Jumiyah", id: "ALADIN000008", jabatan: "Senior Manager", badge: "bg-primary", borderColor: "#0d6efd" },
+            { no: 9, nama: "Muhammad Arif Palacca", id: "ALADIN000009", jabatan: "Senior Manager", badge: "bg-primary", borderColor: "#0d6efd" },
+            { no: 10, nama: "Evy Nurkhalishah", id: "ALADIN000010", jabatan: "Senior Manager", badge: "bg-primary", borderColor: "#0d6efd" },
+            { no: 11, nama: "Bonita Fithri", id: "ALADIN000011", jabatan: "Senior Manager", badge: "bg-primary", borderColor: "#0d6efd" },
+            { no: 12, nama: "Imam Syafi’i", id: "ALADIN000012", jabatan: "Senior Manager", badge: "bg-primary", borderColor: "#0d6efd" },
+            { no: 13, nama: "Seri Saputri", id: "ALADIN000013", jabatan: "Senior Manager", badge: "bg-primary", borderColor: "#0d6efd" },
+            { no: 14, nama: "Resti Saputri", id: "ALADIN000014", jabatan: "Senior Manager", badge: "bg-primary", borderColor: "#0d6efd" },
+            { no: 15, nama: "M. Doni Firdaus", id: "ALADIN000015", jabatan: "Manager", badge: "bg-info text-dark", borderColor: "#0dcaf0" },
+            { no: 16, nama: "Risman Saputra", id: "ALADIN000016", jabatan: "Manager", badge: "bg-info text-dark", borderColor: "#0dcaf0" },
+            { no: 17, nama: "Redo Putra Septi", id: "ALADIN000017", jabatan: "Ambassador", badge: "bg-warning text-dark", borderColor: "#ffc107" },
+            { no: 18, nama: "Marianto", id: "ALADIN000018", jabatan: "Ambassador", badge: "bg-warning text-dark", borderColor: "#ffc107" },
+            { no: 19, nama: "Agus Susanti", id: "ALADIN000019", jabatan: "Ambassador", badge: "bg-warning text-dark", borderColor: "#ffc107" },
+            { no: 20, nama: "Marsa", id: "ALADIN000020", jabatan: "Agent", badge: "bg-success", borderColor: "#198754" },
+            { no: 21, nama: "M. Fahri Firdaus", id: "ALADIN000021", jabatan: "Agent", badge: "bg-success", borderColor: "#198754" }
+        ];
+
+        function setActiveMenu(elementId) {
+            document.querySelectorAll('.components li').forEach(li => li.classList.remove('active'));
+            const el = document.getElementById(elementId);
+            if (el) el.classList.add('active');
+        }
+
+        // Global scale state for zooming chart
+        let currentZoomScale = 1;
+
+        function zoomIn() {
+            if (currentZoomScale < 2.0) {
+                currentZoomScale += 0.15;
+                applyZoom();
+            }
+        }
+
+        function zoomOut() {
+            if (currentZoomScale > 0.4) {
+                currentZoomScale -= 0.15;
+                applyZoom();
+            }
+        }
+
+        function zoomReset() {
+            currentZoomScale = 1;
+            applyZoom();
+        }
+
+        function applyZoom() {
+            const innerTree = document.getElementById('treeWrapperInner');
+            if (innerTree) {
+                innerTree.style.transform = `scale(${currentZoomScale})`;
+            }
+        }
+
+        function filterLeader(kategori) {
+            setActiveMenu('menu-database-leader-parent');
+            document.getElementById('dashboardSection').style.display = 'none';
+
+            let filtered = leadersData;
+            if (kategori !== 'Semua') {
+                filtered = leadersData.filter(item => item.jabatan === kategori);
+            }
+
+            document.getElementById('dynamicCardArea').innerHTML = `
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4" id="tableCard">
+                        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0 text-dark" id="tableTitle">Database Leader - ${kategori} Leader</h5>
+                            <span class="badge bg-primary rounded-pill px-3 py-2" id="totalBadge">Total: ${filtered.length} Anggota</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light" id="tableHeader">
+                                    <tr>
+                                        <th scope="col" class="ps-4">No</th>
+                                        <th scope="col">Nama Anggota</th>
+                                        <th scope="col">User ID</th>
+                                        <th scope="col">Jabatan Leader</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderTableBody">
+                                    ${filtered.map((item, index) => `
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">${index + 1}</td>
+                                            <td class="fw-semibold text-dark">${item.nama}</td>
+                                            <td><span class="badge bg-light text-dark border">${item.id}</span></td>
+                                            <td><span class="badge ${item.badge}">${item.jabatan}</span></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function aktifkanDashboard() {
+            setActiveMenu('menu-dashboard');
+            document.getElementById('dashboardSection').style.display = 'block';
+            document.getElementById('dynamicCardArea').innerHTML = `
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4" id="tableCard">
+                        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0 text-dark" id="tableTitle">Database Leader - Semua Leader</h5>
+                            <span class="badge bg-primary rounded-pill px-3 py-2" id="totalBadge">Total: 21 Anggota</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light" id="tableHeader">
+                                    <tr>
+                                        <th scope="col" class="ps-4">No</th>
+                                        <th scope="col">Nama Anggota</th>
+                                        <th scope="col">User ID</th>
+                                        <th scope="col">Jabatan Leader</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderTableBody">
+                                    ${leadersData.map((item, index) => `
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-secondary">${index + 1}</td>
+                                            <td class="fw-semibold text-dark">${item.nama}</td>
+                                            <td><span class="badge bg-light text-dark border">${item.id}</span></td>
+                                            <td><span class="badge ${item.badge}">${item.jabatan}</span></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function aktifkanProfil() {
+            setActiveMenu('menu-profil');
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('dynamicCardArea').innerHTML = `
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h4 class="fw-bold mb-4"><i class="bx bx-user me-2 text-primary"></i> Profil Saya</h4>
+                        <div class="row align-items-center">
+                            <div class="col-md-3 text-center mb-3 mb-md-0">
+                                <!-- Foto Profil dengan Tombol/Ikon Edit Foto -->
+                                <div class="position-relative d-inline-block mb-3">
+                                    <img src="https://www.sustainableincome.id/image/user-profil.png" alt="Profile" width="120" height="120" class="rounded-circle shadow-sm" id="userAvatarPreview" style="object-fit: cover;">
+                                    <label for="uploadProfilePhoto" class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-2 shadow-sm d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; cursor: pointer;" title="Ganti Foto Profil">
+                                        <i class="bx bx-camera fs-5"></i>
+                                    </label>
+                                    <input type="file" id="uploadProfilePhoto" class="d-none" accept="image/*" onchange="previewProfilePhoto(event)">
+                                </div>
+                                <h5 class="fw-bold mb-1">ABD SATAR</h5>
+                                <span class="badge bg-danger">Director</span>
+                            </div>
+                            <div class="col-md-9">
+                                <form>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-muted small">Nama Lengkap</label>
+                                            <input type="text" class="form-control" value="ABD SATAR" readonly>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-muted small">User ID</label>
+                                            <input type="text" class="form-control" value="ALADIN000001" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-muted small">Nomor WhatsApp</label>
+                                            <input type="text" class="form-control" value="081270013000">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-muted small">Tanggal Bergabung</label>
+                                            <input type="text" class="form-control" value="21 July 2026" readonly>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary px-4" onclick="alert('Perubahan profil berhasil disimpan!')">Simpan Perubahan</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Fungsi preview foto profil setelah dipilih
+        function previewProfilePhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('userAvatarPreview').src = e.target.result;
+                    alert('Foto profil berhasil dipilih! Klik "Simpan Perubahan" untuk menyimpan.');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function aktifkanSetoran() {
+            setActiveMenu('menu-setoran');
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('dynamicCardArea').innerHTML = `
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h4 class="fw-bold mb-3"><i class="bx bx-down-arrow-circle me-2 text-success"></i> Pengajuan Setoran Dana</h4>
+                        <p class="text-muted small mb-4">Formulir untuk pengajuan setoran saldo/dana ke dalam sistem ALADIN.</p>
+                        <form onsubmit="event.preventDefault(); alert('Pengajuan setoran berhasil dikirim!');">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Jumlah Setoran (Rp)</label>
+                                <input type="number" class="form-control" placeholder="Contoh: 1000000" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Metode Pembayaran / Bank</label>
+                                <select class="form-select">
+                                    <option>Transfer Bank BCA</option>
+                                    <option>Transfer Bank Mandiri</option>
+                                    <option>Virtual Account BNI</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Bukti Transfer</label>
+                                <input type="file" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-success px-4">Kirim Pengajuan Setoran</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function aktifkanPenarikan() {
+            setActiveMenu('menu-penarikan');
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('dynamicCardArea').innerHTML = `
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h4 class="fw-bold mb-3"><i class="bx bx-up-arrow-circle me-2 text-danger"></i> Pengajuan Penarikan (Withdrawal)</h4>
+                        <p class="text-muted small mb-4">Saldo Tersedia: <strong>Rp 15.450.000</strong></p>
+                        <form onsubmit="event.preventDefault(); alert('Pengajuan penarikan berhasil diproses!');">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Jumlah Penarikan (Rp)</label>
+                                <input type="number" class="form-control" placeholder="Contoh: 500000" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Tujuan Bank / E-Wallet</label>
+                                <input type="text" class="form-control" placeholder="BCA - 1234567890 a.n Abd Satar" required>
+                            </div>
+                            <button type="submit" class="btn btn-danger px-4">Proses Penarikan</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function aktifkanTransfer() {
+            setActiveMenu('menu-transfer');
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('dynamicCardArea').innerHTML = `
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h4 class="fw-bold mb-3"><i class="bx bx-send me-2 text-primary"></i> Transfer Saldo Antar Anggota</h4>
+                        <form onsubmit="event.preventDefault(); alert('Transfer saldo berhasil!');">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">User ID Tujuan</label>
+                                <input type="text" class="form-control" placeholder="Contoh: ALADIN000002" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Nominal Transfer (Rp)</label>
+                                <input type="number" class="form-control" placeholder="Contoh: 250000" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Catatan (Opsional)</label>
+                                <textarea class="form-control" rows="2" placeholder="Catatan transaksi..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary px-4">Transfer Sekarang</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function aktifkanJaringan() {
+            setActiveMenu('menu-jaringan');
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('dynamicCardArea').innerHTML = `
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-2">
+                            <h4 class="fw-bold mb-0 text-dark">
+                                <i class="bx bx-sitemap me-2 text-primary"></i> Bagan Silsilah Hirarki Eksekutif
+                            </h4>
+                            <div class="d-flex align-items-center gap-2">
+                                <button class="btn btn-sm btn-outline-primary" onclick="zoomIn()" title="Perbesar Bagan">
+                                    <i class="bx bx-zoom-in fs-5"></i> Zoom In
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary" onclick="zoomOut()" title="Perkecil Bagan">
+                                    <i class="bx bx-zoom-out fs-5"></i> Zoom Out
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="zoomReset()" title="Reset Ukuran">
+                                    <i class="bx bx-reset fs-5"></i> Reset
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-muted small mb-3">Visualisasi struktur komando perusahaan: <strong>Director</strong> di puncak dengan <strong>3 Senior Manager</strong> utama di bawahnya.</p>
+                        
+                        <div class="d-flex flex-wrap gap-3 mb-4 p-3 bg-white rounded-3 border shadow-sm align-items-center">
+                            <span class="text-muted small fw-semibold"><i class="bx bx-info-circle"></i> Keterangan Jabatan:</span>
+                            <div class="d-flex align-items-center gap-1.5"><span class="badge bg-danger px-2 py-1">Director</span></div>
+                            <div class="d-flex align-items-center gap-1.5"><span class="badge bg-primary px-2 py-1">Senior Manager</span></div>
+                            <div class="d-flex align-items-center gap-1.5"><span class="badge bg-info text-dark px-2 py-1">Manager</span></div>
+                            <div class="d-flex align-items-center gap-1.5"><span class="badge bg-warning text-dark px-2 py-1">Ambassador</span></div>
+                            <div class="d-flex align-items-center gap-1.5"><span class="badge bg-success px-2 py-1">Agent</span></div>
+                        </div>
+
+                        <div class="tree-container shadow-inner" id="treeContainer">
+                            <div class="tree-wrapper-inner" id="treeWrapperInner">
+                                <div class="tree">
+                                    <ul>
+                                        <li>
+                                            <div class="tree-node-card" style="--node-border: #dc3545;">
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-danger bg-danger bg-opacity-10 shadow-sm" style="width: 44px; height: 44px; font-size: 0.95rem;">AS</div>
+                                                    <div>
+                                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.95rem;">Abd Satar</h6>
+                                                        <small class="text-muted font-monospace" style="font-size: 0.75rem;">ALADIN000001</small>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2 pt-2 border-top d-flex justify-content-between align-items-center">
+                                                    <span class="badge bg-danger bg-opacity-15 text-danger px-2 py-1" style="font-size: 0.7rem; font-weight: 600;">Director</span>
+                                                    <i class="bx bx-crown text-danger fs-5"></i>
+                                                </div>
+                                            </div>
+                                            <ul>
+                                                <li>
+                                                    <div class="tree-node-card" style="--node-border: #0d6efd;">
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-primary bg-primary bg-opacity-10 shadow-sm" style="width: 42px; height: 42px; font-size: 0.9rem;">SW</div>
+                                                            <div>
+                                                                <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;">Seri Witdawati</h6>
+                                                                <small class="text-muted font-monospace" style="font-size: 0.75rem;">ALADIN000002</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2 pt-2 border-top d-flex justify-content-between align-items-center">
+                                                            <span class="badge bg-primary bg-opacity-15 text-primary px-2 py-1" style="font-size: 0.7rem; font-weight: 600;">Senior Manager</span>
+                                                            <i class="bx bx-award text-primary fs-6"></i>
+                                                        </div>
+                                                    </div>
+                                                    <ul>
+                                                        <li>
+                                                            <div class="tree-node-card" style="--node-border: #0d6efd;">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 36px; height: 36px; font-size: 0.8rem;">RM</div>
+                                                                    <div>
+                                                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.85rem;">Ratu Multazam</h6>
+                                                                        <small class="text-muted font-monospace" style="font-size: 0.7rem;">ALADIN000005</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mt-2 pt-1 border-top"><span class="badge bg-primary bg-opacity-15 text-primary" style="font-size: 0.65rem;">Senior Manager</span></div>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="tree-node-card" style="--node-border: #0d6efd;">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 36px; height: 36px; font-size: 0.8rem;">BA</div>
+                                                                    <div>
+                                                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.8rem;">Birri Alfa Thariq</h6>
+                                                                        <small class="text-muted font-monospace" style="font-size: 0.7rem;">ALADIN000006</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mt-2 pt-1 border-top"><span class="badge bg-primary bg-opacity-15 text-primary" style="font-size: 0.65rem;">Senior Manager</span></div>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="tree-node-card" style="--node-border: #0d6efd;">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 36px; height: 36px; font-size: 0.8rem;">SA</div>
+                                                                    <div>
+                                                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.85rem;">Siti Aiysah</h6>
+                                                                        <small class="text-muted font-monospace" style="font-size: 0.7rem;">ALADIN000007</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mt-2 pt-1 border-top"><span class="badge bg-primary bg-opacity-15 text-primary" style="font-size: 0.65rem;">Senior Manager</span></div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+
+                                                <li>
+                                                    <div class="tree-node-card" style="--node-border: #0d6efd;">
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-primary bg-primary bg-opacity-10 shadow-sm" style="width: 42px; height: 42px; font-size: 0.9rem;">W</div>
+                                                            <div>
+                                                                <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;">Wardah</h6>
+                                                                <small class="text-muted font-monospace" style="font-size: 0.75rem;">ALADIN000003</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2 pt-2 border-top d-flex justify-content-between align-items-center">
+                                                            <span class="badge bg-primary bg-opacity-15 text-primary px-2 py-1" style="font-size: 0.7rem; font-weight: 600;">Senior Manager</span>
+                                                            <i class="bx bx-award text-primary fs-6"></i>
+                                                        </div>
+                                                    </div>
+                                                    <ul>
+                                                        <li>
+                                                            <div class="tree-node-card" style="--node-border: #0d6efd;">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 36px; height: 36px; font-size: 0.8rem;">SJ</div>
+                                                                    <div>
+                                                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.85rem;">Siti Jumiyah</h6>
+                                                                        <small class="text-muted font-monospace" style="font-size: 0.7rem;">ALADIN000008</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mt-2 pt-1 border-top"><span class="badge bg-primary bg-opacity-15 text-primary" style="font-size: 0.65rem;">Senior Manager</span></div>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="tree-node-card" style="--node-border: #0d6efd;">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 36px; height: 36px; font-size: 0.8rem;">MA</div>
+                                                                    <div>
+                                                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.8rem;">Muhammad Arif Palacca</h6>
+                                                                        <small class="text-muted font-monospace" style="font-size: 0.7rem;">ALADIN000009</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mt-2 pt-1 border-top"><span class="badge bg-primary bg-opacity-15 text-primary" style="font-size: 0.65rem;">Senior Manager</span></div>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="tree-node-card" style="--node-border: #0d6efd;">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 36px; height: 36px; font-size: 0.8rem;">EN</div>
+                                                                    <div>
+                                                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.8rem;">Evy Nurkhalishah</h6>
+                                                                        <small class="text-muted font-monospace" style="font-size: 0.7rem;">ALADIN000010</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mt-2 pt-1 border-top"><span class="badge bg-primary bg-opacity-15 text-primary" style="font-size: 0.65rem;">Senior Manager</span></div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+
+                                                <li>
+                                                    <div class="tree-node-card" style="--node-border: #0d6efd;">
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-primary bg-primary bg-opacity-10 shadow-sm" style="width: 42px; height: 42px; font-size: 0.9rem;">MZ</div>
+                                                            <div>
+                                                                <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.8rem;">Muhammad Zaini Habibie</h6>
+                                                                <small class="text-muted font-monospace" style="font-size: 0.75rem;">ALADIN000004</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2 pt-2 border-top d-flex justify-content-between align-items-center">
+                                                            <span class="badge bg-primary bg-opacity-15 text-primary px-2 py-1" style="font-size: 0.7rem; font-weight: 600;">Senior Manager</span>
+                                                            <i class="bx bx-award text-primary fs-6"></i>
+                                                        </div>
+                                                    </div>
+                                                    <ul>
+                                                        <li>
+                                                            <div class="tree-node-card" style="--node-border: #0d6efd;">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 36px; height: 36px; font-size: 0.8rem;">BF</div>
+                                                                    <div>
+                                                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.85rem;">Bonita Fithri</h6>
+                                                                        <small class="text-muted font-monospace" style="font-size: 0.7rem;">ALADIN000011</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mt-2 pt-1 border-top"><span class="badge bg-primary bg-opacity-15 text-primary" style="font-size: 0.65rem;">Senior Manager</span></div>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="tree-node-card" style="--node-border: #0d6efd;">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 36px; height: 36px; font-size: 0.8rem;">IS</div>
+                                                                    <div>
+                                                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.85rem;">Imam Syafi’i</h6>
+                                                                        <small class="text-muted font-monospace" style="font-size: 0.7rem;">ALADIN000012</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mt-2 pt-1 border-top"><span class="badge bg-primary bg-opacity-15 text-primary" style="font-size: 0.65rem;">Senior Manager</span></div>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="tree-node-card" style="--node-border: #0d6efd;">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 36px; height: 36px; font-size: 0.8rem;">SS</div>
+                                                                    <div>
+                                                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.85rem;">Seri Saputri</h6>
+                                                                        <small class="text-muted font-monospace" style="font-size: 0.7rem;">ALADIN000013</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mt-2 pt-1 border-top"><span class="badge bg-primary bg-opacity-15 text-primary" style="font-size: 0.65rem;">Senior Manager</span></div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function aktifkanReferalLink() {
+            setActiveMenu('menu-referal');
+            document.getElementById('dashboardSection').style.display = 'none';
+            
+            const refUrl = "https://www.sustainableincome.id/aladin/register?ref=ALADIN000001";
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(refUrl)}`;
+
+            document.getElementById('dynamicCardArea').innerHTML = `
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h4 class="fw-bold mb-3"><i class="bx bx-link me-2 text-primary"></i> Referal Link & QR Code</h4>
+                        <p class="text-muted small mb-4">Bagikan link referal atau scan QR code Anda kepada calon anggota baru untuk bergabung ke dalam jaringan ALADIN.</p>
+                        
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold">Link Referal Anda</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" id="referalLinkInput" value="${refUrl}" readonly>
+                                    <button class="btn btn-primary px-4" type="button" onclick="copyReferalLink()">
+                                        <i class="bx bx-copy me-1"></i> Salin Link
+                                    </button>
+                                </div>
+                                <div class="form-text mb-3">Setiap pendaftaran melalui link ini akan otomatis tercatat di bawah jaringan Anda.</div>
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="p-3 bg-light rounded-3 border">
+                                            <div class="text-muted small">Total Klik Link</div>
+                                            <h4 class="fw-bold mb-0 text-dark mt-1">48 Kali</h4>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="p-3 bg-light rounded-3 border">
+                                            <div class="text-muted small">Anggota Terdaftar</div>
+                                            <h4 class="fw-bold mb-0 text-success mt-1">12 Anggota</h4>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="p-3 bg-light rounded-3 border">
+                                            <div class="text-muted small">Total Bonus</div>
+                                            <h4 class="fw-bold mb-0 text-primary mt-1">Rp 1.5M</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mt-4 mt-md-0">
+                                <div class="p-3 bg-white border rounded-3 shadow-sm d-inline-block">
+                                    <img src="${qrApiUrl}" alt="QR Code Referal" class="img-fluid rounded mb-2" style="width: 160px; height: 160px;">
+                                    <div class="text-muted small fw-semibold">Scan untuk Daftar</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 pt-3 border-top">
+                            <a href="https://api.whatsapp.com/send?text=Ayo%20gabung%20di%20ALADIN%20bersama%20saya!%20Klik%20link%20berikut:%20${encodeURIComponent(refUrl)}" target="_blank" class="btn btn-success">
+                                <i class="bx bxl-whatsapp fs-5 me-1 align-middle"></i> Bagikan ke WhatsApp
+                            </a>
+                            <a href="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(refUrl)}" download="QR_Code_ALADIN000001.png" target="_blank" class="btn btn-outline-secondary">
+                                <i class="bx bx-download fs-5 me-1 align-middle"></i> Download Gambar QR Code
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function copyReferalLink() {
+            const input = document.getElementById('referalLinkInput');
+            input.select();
+            navigator.clipboard.writeText(input.value).then(() => {
+                alert('Link referal berhasil disalin ke clipboard!');
+            });
+        }
+
+        function aktifkanProfitSharing() {
+            setActiveMenu('menu-profit-sharing');
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('dynamicCardArea').innerHTML = `
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h4 class="fw-bold mb-3"><i class="bx bx-dollar-circle me-2 text-success"></i> Profit Sharing</h4>
+                        <p class="text-muted small mb-4">Laporan pembagian keuntungan atau bonus dari jaringan dan aktivitas platform.</p>
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Tanggal</th>
+                                        <th>Keterangan</th>
+                                        <th>Jumlah Bonus</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="ps-3">14 Agustus 2026</td>
+                                        <td>Bonus Profit Sharing Jaringan Tier 1</td>
+                                        <td class="text-success fw-bold">+ Rp 1.250.000</td>
+                                        <td><span class="badge bg-success">Berhasil</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="ps-3">01 Agustus 2026</td>
+                                        <td>Bonus Profit Sharing Jaringan Tier 2</td>
+                                        <td class="text-success fw-bold">+ Rp 850.000</td>
+                                        <td><span class="badge bg-success">Berhasil</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
